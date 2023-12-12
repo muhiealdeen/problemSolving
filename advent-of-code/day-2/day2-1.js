@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 function readFile(file) {
-  const lines = fs.readFileSync(file, 'utf-8');
+  const lines = fs.readFileSync(file, 'utf-8').trim().split('/n');
   return lines;
 }
 
