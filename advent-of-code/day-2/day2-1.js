@@ -13,11 +13,21 @@ function readFile(file) {
     const sets = line
       .split(': ')[1]
       .split('; ')
-      .map((set) => set.split(', '));
-    console.log(sets);
+      .map((set) => {
+        const pulls = set.split(', ');
+        console.log('pulls', pulls);
+        return pulls.every((pull) => {
+          const [value, color] = pull.split(' ');
+          console.log('=============', value, color);
+          // console.log('NUMBER!!!!', Number(value));
+          console.log('MAX??????', maxValues[color]);
+          // return maxValues[color] >= Number(value);
+        });
+      });
+    console.log('sets', sets);
   });
 
   // return lines;
 }
 
-console.log('LLLLLLL', readFile('input1.txt'));
+console.log('LLLLLLL', readFile('./input.txt'));
