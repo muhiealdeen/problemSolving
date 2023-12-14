@@ -51,11 +51,10 @@ function readFile(file) {
       const pulls = set.split(', ');
       return pulls.every((pull) => {
         const [value, color] = pull.split(' ');
-        const validColor = color.toLowerCase(); // Convert color to lowercase for case-insensitivity
-        return (
-          maxValues[validColor] !== undefined &&
-          maxValues[validColor] >= Number(value)
-        );
+        // console.log('=============', value, color);
+        console.log('NUMBER!!!!', Number(value));
+        console.log('MAX??????', maxValues[color]);
+        return maxValues[color] >= Number(value);
       });
     });
 
