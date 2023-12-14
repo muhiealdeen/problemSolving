@@ -51,15 +51,24 @@ function readFile(file) {
       const pulls = set.split(', ');
       return pulls.every((pull) => {
         const [value, color] = pull.split(' ');
-        console.log('=============', value, color);
-        // console.log('NUMBER!!!!', Number(value));
-        console.log('MAX??????', maxValues[color]);
-        return maxValues[color] >= Number(value);
+        const validColor = color.toLowerCase(); // Convert color to lowercase for case-insensitivity
+        return (
+          maxValues[validColor] !== undefined &&
+          maxValues[validColor] >= Number(value)
+        );
       });
     });
+
+    if (isPossible) {
+      const gameId = parseInt(line.split(': ')[0].split(' ')[1]);
+      possibleGames.push(gameId);
+    }
   });
 
   return possibleGames;
 }
 
-console.log('LLLLLLL', readFile('./input.txt'));
+console.log(
+  'Sum of IDs of possible games:',
+  readFile('./input.txt').reduce((sum, id) => sum + id, 0),
+);
