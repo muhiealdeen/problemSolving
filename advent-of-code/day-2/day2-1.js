@@ -52,7 +52,7 @@ function readFile(file) {
       return pulls.every((pull) => {
         const [value, color] = pull.split(' ');
         // console.log('=============', value, color);
-        console.log('NUMBER!!!!', Number(value));
+        // console.log('NUMBER!!!!', Number(value));
         console.log('MAX??????', maxValues[color]);
         return maxValues[color] >= Number(value);
       });
