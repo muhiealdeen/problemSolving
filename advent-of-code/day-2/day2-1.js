@@ -1,4 +1,37 @@
-// // const { count } = require('console');
+// // // const { count } = require('console');
+// // const fs = require('fs');
+
+// // const maxValues = {
+// //   red: 12,
+// //   green: 13,
+// //   blue: 14,
+// // };
+// // function readFile(file) {
+// //   const lines = fs.readFileSync(file, 'utf-8').trim().split('\n');
+// //   // Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+// //   lines.map((line) => {
+// //     const sets = line
+// //       .split(': ')[1]
+// //       .split('; ')
+// //       .map((set) => {
+// //         const pulls = set.split(', ');
+// //         console.log('pulls', pulls);
+// //         return pulls.every((pull) => {
+// //           const [value, color] = pull.split(' ');
+// //           // console.log('=============', value, color);
+// //           // // console.log('NUMBER!!!!', Number(value));
+// //           // console.log('MAX??????', maxValues[color]);
+// //           // // return maxValues[color] >= Number(value);
+// //         });
+// //       });
+// //     console.log('sets', sets);
+// //   });
+
+// //   // return lines;
+// // }
+
+// // console.log('LLLLLLL', readFile('./input.txt'));
+
 // const fs = require('fs');
 
 // const maxValues = {
@@ -6,68 +39,101 @@
 //   green: 13,
 //   blue: 14,
 // };
+
 // function readFile(file) {
 //   const lines = fs.readFileSync(file, 'utf-8').trim().split('\n');
-//   // Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
-//   lines.map((line) => {
-//     const sets = line
-//       .split(': ')[1]
-//       .split('; ')
-//       .map((set) => {
-//         const pulls = set.split(', ');
-//         console.log('pulls', pulls);
-//         return pulls.every((pull) => {
-//           const [value, color] = pull.split(' ');
-//           // console.log('=============', value, color);
-//           // // console.log('NUMBER!!!!', Number(value));
-//           // console.log('MAX??????', maxValues[color]);
-//           // // return maxValues[color] >= Number(value);
-//         });
+//   const possibleGames = [];
+
+//   lines.forEach((line) => {
+//     const sets = line.split(': ')[1].split('; ');
+
+//     const isPossible = sets.every((set) => {
+//       const pulls = set.split(', ');
+//       return pulls.every((pull) => {
+//         const [value, color] = pull.split(' ');
+//         // console.log('=============', value, color);
+//         // console.log('NUMBER!!!!', Number(value));
+//         console.log('MAX??????', maxValues[color]);
+//         return maxValues[color] >= Number(value);
 //       });
-//     console.log('sets', sets);
+//     });
+
+//     if (isPossible) {
+//       const gameId = parseInt(line.split(': ')[0].split(' ')[1]);
+//       possibleGames.push(gameId);
+//     }
 //   });
 
-//   // return lines;
+//   return possibleGames;
 // }
 
-// console.log('LLLLLLL', readFile('./input.txt'));
-
+// console.log(
+//   'Sum of IDs of possible games:',
+//   readFile('./input.txt').reduce((sum, id) => sum + id, 0),
+// );
 const fs = require('fs');
+const readline = require('readline');
 
-const maxValues = {
-  red: 12,
-  green: 13,
-  blue: 14,
+const filePath = 'input.txt';
+
+const fileStream = fs.createReadStream(filePath);
+
+const rl = readline.createInterface({
+  input: fileStream,
+  crlfDelay: Infinity,
+});
+
+const gameStats = [];
+
+const handleSingleLine = (singleLine) => {
+  const [Red, Green, Blue] = [[], [], []];
+  const gameStats = {};
+  const seperateGameId = singleLine.split(':');
+  const separateSets = seperateGameId[1].split(';');
+  separateSets.forEach((element) => {
+    const separateColors = element.split(',');
+    separateColors.forEach((element) => {
+      const separateColor = element.split(',')[0].trim();
+      const finalSeparation = separateColor.split(' ');
+      if (finalSeparation[1] === 'red') Red.push(+finalSeparation[0]);
+      if (finalSeparation[1] === 'green') Green.push(+finalSeparation[0]);
+      if (finalSeparation[1] === 'blue') Blue.push(+finalSeparation[0]);
+    });
+  });
+  const gameId = parseInt(seperateGameId[0].split(' ')[1].trim());
+  gameStats.Red = Math.max(...Red);
+  gameStats.Green = Math.max(...Green);
+  gameStats.Blue = Math.max(...Blue);
+
+  return { gameId, ...gameStats };
 };
 
-function readFile(file) {
-  const lines = fs.readFileSync(file, 'utf-8').trim().split('\n');
-  const possibleGames = [];
+const findPossible = (games, maxColorCubes) => {
+  const filteredArray = games.filter(
+    (game) =>
+      game.Red <= maxColorCubes.red &&
+      game.Green <= maxColorCubes.green &&
+      game.Blue <= maxColorCubes.blue,
+  );
+  return filteredArray;
+};
 
-  lines.forEach((line) => {
-    const sets = line.split(': ')[1].split('; ');
+const findTotal = (filteredArray) => {
+  return filteredArray.reduce((acc, curVal) => acc + curVal.gameId, 0);
+};
 
-    const isPossible = sets.every((set) => {
-      const pulls = set.split(', ');
-      return pulls.every((pull) => {
-        const [value, color] = pull.split(' ');
-        // console.log('=============', value, color);
-        // console.log('NUMBER!!!!', Number(value));
-        console.log('MAX??????', maxValues[color]);
-        return maxValues[color] >= Number(value);
-      });
-    });
+rl.on('line', (line) => {
+  const singleGameStats = handleSingleLine(line);
+  gameStats.push(singleGameStats);
+});
 
-    if (isPossible) {
-      const gameId = parseInt(line.split(': ')[0].split(' ')[1]);
-      possibleGames.push(gameId);
-    }
+rl.on('close', () => {
+  console.log(gameStats);
+  const possibleArray = findPossible(gameStats, {
+    red: 12,
+    green: 13,
+    blue: 14,
   });
 
-  return possibleGames;
-}
-
-console.log(
-  'Sum of IDs of possible games:',
-  readFile('./input.txt').reduce((sum, id) => sum + id, 0),
-);
+  console.log(findTotal(possibleArray));
+});
