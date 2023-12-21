@@ -9,13 +9,13 @@ function readFile2(file) {
       green: 0,
       blue: 0,
     };
-    console.log(line, 'line');
+    // console.log(line, 'line');
     line
       .split(': ')[1]
       .split('; ')
       .forEach((set) => {
         const pulls = set.split(', ');
-        console.log(pulls, 'pulls');
+        // console.log(pulls, 'pulls');
         return pulls.map((pull) => {
           const [value, color] = pull.trim().split(' ');
           // console.log('=============', value, color);
@@ -28,7 +28,7 @@ function readFile2(file) {
     return maxValues.red * maxValues.green * maxValues.blue;
   });
 }
-const powerArray = readFile2('./example.txt');
+const powerArray = readFile2('./input.txt');
 const sumOfPowers = powerArray.reduce((total, number) => total + number, 0);
 
 console.log('The sum of the power of these sets', powerArray);
