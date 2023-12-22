@@ -5,6 +5,6 @@ fs.readFile('./examlpe.txt', 'utf-8', (err, data) => {
     console.error('Error reading file:', err);
     return;
   }
-  const input = data.split('\n');
+  const input = data.trim().split('\n');
   console.log(input);
 });
