@@ -10,7 +10,7 @@ fs.readFile('./examlpe.txt', 'utf-8', (err, data) => {
   const totalRows = schematicRows.length;
   const totalCols = schematicRows[0].length;
 
-  // let partNumbers = [];
+  let partNumbers = [];
 
   for (let i = 0; i < totalRows; i++) {
     for (let j = 0; j < totalCols; j++) {
@@ -38,8 +38,16 @@ fs.readFile('./examlpe.txt', 'utf-8', (err, data) => {
           : schematicRows[i + 1].substring(j - partNumber.length - 1, j + 1);
       const left = schematicRows[i][j - partNumber.length - 1] || '';
       const right = schematicRows[i][j] || '';
+      // console.log(partNumber, top, right, bottom, left);
 
-      console.log(partNumber, top, right, bottom, left);
+      if (
+        hasAdjacentSymbol(top) ||
+        hasAdjacentSymbol(bottom) ||
+        hasAdjacentSymbol(right) ||
+        hasAdjacentSymbol(left)
+      ) {
+        partNumbers.push(Number(partNumber));
+      }
     }
   }
 });
