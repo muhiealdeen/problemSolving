@@ -56,4 +56,10 @@ fs.readFile('./examlpe.txt', 'utf-8', (err, data) => {
       }
     }
   }
+
+  let sumOfPartNumbers = partNumbers.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0,
+  );
+  console.log(sumOfPartNumbers);
 });
