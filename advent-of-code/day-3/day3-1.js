@@ -1,5 +1,11 @@
 const fs = require('fs');
 
+const hasAdjacentSymbol = (str) => {
+  if (str?.length && str.split('').find((char) => isNaN(char) && char !== '.'))
+    return true;
+  return false;
+};
+
 fs.readFile('./examlpe.txt', 'utf-8', (err, data) => {
   if (err) {
     console.error('Error reading file:', err);
